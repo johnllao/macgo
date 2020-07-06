@@ -3,5 +3,6 @@
 bin/
 data/
 notes
+var/
 vendor/
 
