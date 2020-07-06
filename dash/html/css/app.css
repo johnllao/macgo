@@ -1,0 +1,45 @@
+body {
+    background-color: #036;
+    color: #fff;
+    font-family: Arial;
+    margin: 0;
+    padding: 0;
+}
+
+.head {
+    font-weight: normal;
+    margin: .5em;
+    padding: 0;
+}
+
+.bgnd-blue {
+    background-color: #369;
+}
+
+.bgnd-gold {
+    background-color: #fc6;
+}
+
+.bgnd-white {
+    background-color: #fff;
+}
+
+.bgnd-midnight-blue {
+    background-color: #036;
+}
+
+.fgnd-blue {
+    color: #369;
+}
+
+.fgnd-gold {
+    color: #fc6;
+}
+
+.fgnd-white {
+    color: #fff;
+}
+
+.fgnd-midnight-blue {
+    color: #036;
+}
