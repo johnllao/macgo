@@ -81,9 +81,9 @@ button, input[type=submit] {
 
 .row {
     display: block;
-    padding: .2em;
 }
 
 .cell {
     display: inline-block;
+    padding: .2em;
 }
