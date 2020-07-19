@@ -1,0 +1,89 @@
+body {
+    background-color: #333;
+    color: #eee;
+    font-family: Arial;
+    font-size: 12pt;
+}
+
+a {
+    color: #eee;
+}
+
+input[type=text], input[type=password] {
+    background-color: #bbb;
+    border: solid 1px #999;
+    border-radius: 4px;
+    font-family: Arial;
+    font-size: 12pt;
+    outline: none;
+    padding: .5em;
+    width: 100%;
+}
+
+button, input[type=submit] {
+    background-color: #6cf;
+    border: 0;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-family: Arial;
+    font-size: 12pt;
+    padding: .5em;
+}
+
+.width-1 {
+    width: 96px;
+}
+
+.width-2 {
+    width: 192px;
+}
+
+.width-3 {
+    width: 288px;
+}
+
+.width-4 {
+    width: 384px;
+}
+
+.width-5 {
+    width: 480px;
+}
+
+.width-6 {
+    width: 576px;
+}
+
+.width-7 {
+    width: 672px;
+}
+
+.width-8 {
+    width: 768px;
+}
+
+.width-9 {
+    width: 864px;
+}
+
+.width-10 {
+    width: 960px;
+}
+
+.width-11 {
+    width: 1056px;
+}
+
+.width-12 {
+    width: 1152px;
+}
+
+.row {
+    display: block;
+}
+
+.cell {
+    display: inline-block;
+    padding: .2em;
+}

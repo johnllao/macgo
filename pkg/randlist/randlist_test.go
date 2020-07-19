@@ -31,6 +31,4 @@ func TestRandomizeStrings(t *testing.T) {
 		t.Error("Mismatch between ordered list and randon list sizes")
 		return
 	}
-
-	t.Log(rlist)
 }

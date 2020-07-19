@@ -37,7 +37,7 @@ func OpenDB(path string) (*DB, error) {
 }
 
 func (d *DB) Close() {
-	d.Close()
+	d.db.Close()
 }
 
 func (d *DB) Save(bucket string, key string, value []byte) error {
