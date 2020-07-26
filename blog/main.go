@@ -9,13 +9,12 @@ import (
 
 var (
 	port int
-	blogpath string
-	logpath string
+	staticpath string
 )
 
 func init() {
 	flag.IntVar(&port, "port", 8080, "service port number")
-	flag.StringVar(&blogpath, "blog", "", "path of the blog article files")
+	flag.StringVar(&staticpath, "static", "", "path of the static files")
 	flag.Parse()
 }
 
@@ -36,5 +35,6 @@ func starthttp() {
 }
 
 func indexhandle(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Content-Type", "text/plain")
+	w.Write([]byte("Welcome!"))
 }
