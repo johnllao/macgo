@@ -9,7 +9,6 @@ import (
 )
 
 const (
-	BuffLen = 1024
 	FileSeparator = 0x1C
 )
 
@@ -25,8 +24,20 @@ func (w *ResponseWriter) Write(p []byte) (int, error) {
 type Server struct {
 	Port       int
 	MsgHandler func(io.Writer, []byte)
+	Ready      chan int
+	Close      chan int
 
 	listener   net.Listener
+
+}
+
+func NewServer(port int, msgh func(io.Writer, []byte)) *Server {
+	return &Server{
+		Port:       port,
+		MsgHandler: msgh,
+		Ready:      make(chan int),
+		Close:      make(chan int),
+	}
 }
 
 func (s *Server) Start() error {
@@ -35,15 +46,24 @@ func (s *Server) Start() error {
 	if err != nil {
 		return err
 	}
-	for {
-		var conn net.Conn
-		conn, err = s.listener.Accept()
-		if err != nil {
-			log.Print("WARN: ", err)
-		}
+	go func() {
+		s.Ready <- 1
+	}()
 
-		go s.process(conn)
-	}
+	go func() {
+		for {
+			var conn net.Conn
+			conn, err = s.listener.Accept()
+			if err != nil {
+				log.Print("WARN: ", err)
+			}
+
+			go s.process(conn)
+		}
+		s.Close <- 1
+	}()
+
+	return nil
 }
 
 func (s *Server) process (conn net.Conn) {
@@ -51,7 +71,7 @@ func (s *Server) process (conn net.Conn) {
 	var r = bufio.NewReader(conn)
 	for {
 		var data []byte
-		data, err = r.ReadBytes(0x1C)
+		data, err = r.ReadBytes(FileSeparator)
 		if err == io.EOF {
 			break
 		}

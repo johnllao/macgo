@@ -1,10 +1,11 @@
 module github.com/johnllao/macgo
 
-go 1.14
+go 1.15
 
 require (
 	github.com/boltdb/bolt v1.3.1
 	github.com/faiface/beep v1.0.2
+	github.com/gomodule/redigo v1.8.2
 	github.com/hajimehoshi/go-mp3 v0.2.1 // indirect
 	github.com/hajimehoshi/oto v0.6.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
