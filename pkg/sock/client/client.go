@@ -2,12 +2,20 @@ package client
 
 import (
 	"bufio"
+	"fmt"
 	"net"
+
+	"github.com/johnllao/macgo/pkg/sock/utils"
 )
 
-const (
-	FileSeparator = 0x1C
-)
+type ClientError struct {
+	errmsg string
+	InnerErr error
+}
+
+func (e *ClientError) Error() string {
+	return e.errmsg
+}
 
 type Client struct {
 	conn net.Conn
@@ -18,7 +26,7 @@ func Connect(addr string) (*Client, error) {
 	var conn net.Conn
 	conn, err = net.Dial("tcp", addr)
 	if err != nil {
-		return nil, err
+		return nil, &ClientError{ errmsg: "Connect() Unable to connect to " + addr, InnerErr: err}
 	}
 	var cli = &Client{
 		conn: conn,
@@ -26,23 +34,45 @@ func Connect(addr string) (*Client, error) {
 	return cli, nil
 }
 
-func (c *Client) Send(data []byte) ([]byte, error) {
+func (c *Client) Send(data []byte, receive bool) ([]byte, error) {
 
 	var err error
-	var m = append(data, FileSeparator)
-	_, err = c.conn.Write(m)
+
+	var p []byte
+	p , err = utils.Payload(data)
 	if err != nil {
-		return nil, err
+		return nil, &ClientError{ errmsg: "Send() Unable to read payload", InnerErr: err }
+	}
+
+	_, err = c.conn.Write(p)
+	if err != nil {
+		return nil, &ClientError{ errmsg: "Send() Unable to write payload to socket", InnerErr: err }
+	}
+
+	if !receive {
+		return nil, nil
 	}
 
 	var r = bufio.NewReader(c.conn)
-	var res []byte
-	res, err = r.ReadBytes(FileSeparator)
+	p, err = r.ReadBytes(utils.FileSeparator)
 	if err != nil {
-		return nil, err
+		return nil, &ClientError{ errmsg: "Send() Unable to read response from socket", InnerErr: err }
 	}
 
-	return res[:len(res) - 1], nil
+	var d []byte
+	var s int
+	s, d, err = utils.PayloadData(p)
+	if err != nil {
+		return nil, &ClientError{ errmsg: "Send() Unable to read response payload from socket", InnerErr: err }
+	}
+
+	if s != len(data) {
+		fmt.Println(s)
+		fmt.Println(len(data))
+		return nil, &ClientError{ errmsg: "Send() Invalid response payload", InnerErr: err }
+	}
+
+	return d, nil
 }
 
 func (c *Client) Close() {

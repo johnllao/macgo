@@ -6,10 +6,8 @@ import (
 	"log"
 	"net"
 	"strconv"
-)
 
-const (
-	FileSeparator = 0x1C
+	"github.com/johnllao/macgo/pkg/sock/utils"
 )
 
 type ResponseWriter struct {
@@ -17,7 +15,12 @@ type ResponseWriter struct {
 }
 
 func (w *ResponseWriter) Write(p []byte) (int, error) {
-	var d = append(p, FileSeparator)
+	var err error
+	var d []byte
+	d, err = utils.Payload(p)
+	if err != nil {
+		return -1, err
+	}
 	return w.conn.Write(d)
 }
 
@@ -42,10 +45,11 @@ func NewServer(port int, msgh func(io.Writer, []byte)) *Server {
 
 func (s *Server) Start() error {
 	var err error
-	s.listener, err = net.Listen("tcp", "localhost:" + strconv.Itoa(s.Port))
+	s.listener, err = net.Listen("tcp", ":" + strconv.Itoa(s.Port))
 	if err != nil {
 		return err
 	}
+
 	go func() {
 		s.Ready <- 1
 	}()
@@ -71,7 +75,7 @@ func (s *Server) process (conn net.Conn) {
 	var r = bufio.NewReader(conn)
 	for {
 		var data []byte
-		data, err = r.ReadBytes(FileSeparator)
+		data, err = r.ReadBytes(utils.FileSeparator)
 		if err == io.EOF {
 			break
 		}
@@ -79,8 +83,7 @@ func (s *Server) process (conn net.Conn) {
 			conn.Close()
 			break
 		}
-		var datalen = len(data)
-		data = data[:datalen - 1]
+		_, data, err = utils.PayloadData(data)
 		if s.MsgHandler != nil {
 			var w = &ResponseWriter{
 				conn: conn,

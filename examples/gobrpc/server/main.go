@@ -14,12 +14,8 @@ const (
 )
 
 func main() {
-	var s = server.Server{
-		Port: port,
-		MsgHandler: servermsghandler,
-	}
+	var s = server.NewServer(8080, servermsghandler)
 	s.Start()
-
 	<-s.Ready
 
 	fmt.Print("Press ENTER key to exit ")
@@ -28,5 +24,5 @@ func main() {
 }
 
 func servermsghandler(w io.Writer, d []byte) {
-	w.Write(append([]byte("ACK: "), d...))
+	w.Write(d)
 }
