@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/johnllao/macgo/examples/gobrpc/message"
 	"github.com/johnllao/macgo/pkg/sock/client"
 )
 
@@ -16,30 +17,64 @@ func main() {
 		return
 	}
 
-	var start time.Time
+	sum(cli, 1, 2)
+	diff(cli, 2, 1)
+}
+
+func sum(cli *client.Client, a, b int) {
+	var err error
+
+	var r []byte
+
+	var start = time.Now()
+
+	var o *message.Operation
+	o, err  = message.NewSumOperation(a, b)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	var data []byte
-
-	start = time.Now()
-	data, err = cli.Send([]byte("Hello1"), true)
+	data, err  = o.ToBytes()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(time.Since(start), string(data))
 
-	start = time.Now()
-	data, err = cli.Send([]byte("Hello2"), true)
+	r, err = cli.Send(data, true)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(time.Since(start), string(data))
+	fmt.Println(time.Since(start), string(r))
+}
 
-	start = time.Now()
-	data, err = cli.Send([]byte("Hello3"), true)
+func diff(cli *client.Client, a, b int) {
+	var err error
+
+	var r []byte
+
+	var start = time.Now()
+
+	var o *message.Operation
+	o, err  = message.NewDiffOperation(a, b)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(time.Since(start), string(data))
+
+	var data []byte
+	data, err  = o.ToBytes()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	r, err = cli.Send(data, true)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(time.Since(start), string(r))
 }

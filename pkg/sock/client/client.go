@@ -2,7 +2,6 @@ package client
 
 import (
 	"bufio"
-	"fmt"
 	"net"
 
 	"github.com/johnllao/macgo/pkg/sock/utils"
@@ -66,9 +65,7 @@ func (c *Client) Send(data []byte, receive bool) ([]byte, error) {
 		return nil, &ClientError{ errmsg: "Send() Unable to read response payload from socket", InnerErr: err }
 	}
 
-	if s != len(data) {
-		fmt.Println(s)
-		fmt.Println(len(data))
+	if s != len(d) {
 		return nil, &ClientError{ errmsg: "Send() Invalid response payload", InnerErr: err }
 	}
 
