@@ -1,0 +1,26 @@
+body {
+    background-color: #fff;
+    font-family: "Courier New";
+    font-size: 10pt;
+}
+
+h1 {
+    color: #333;
+    font-family: "Courier New";
+    font-size: 20pt;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+
+.row {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.cell {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
