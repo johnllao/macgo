@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/johnllao/macgo/pkg/csvrw"
 )
@@ -17,6 +18,12 @@ type Sales struct {
 
 var (
 	sourcepath  string
+
+	salespool = &sync.Pool {
+		New: func() interface{} {
+			return new(Sales)
+		},
+	}
 )
 
 func init() {
@@ -45,19 +52,20 @@ func main() {
 	}
 
 	for i := range rows {
-		var s = i.(Sales)
+		var s = i.(*Sales)
 		log.Printf("%s - %s - %s", s.Country, s.ItemType, s.Price)
+		salespool.Put(s)
 	}
 
 }
 
 func tosales(r []string) interface{} {
-	return Sales {
-		Region:   r[0],
-		Country:  r[1],
-		ItemType: r[2],
-		Price:    r[9],
-	}
+	var s = salespool.Get().(*Sales)
+	s.Region =   r[0]
+	s.Country =  r[1]
+	s.ItemType = r [2]
+	s.Price =    r[9]
+	return s
 }
 
 func filtersales(r []string) bool {

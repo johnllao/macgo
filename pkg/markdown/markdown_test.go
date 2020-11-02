@@ -1,7 +1,12 @@
 package markdown
 
 import (
+	"bytes"
+	"sync"
 	"testing"
+
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/renderer/html"
 )
 
 func TestMarkdown(t *testing.T) {
@@ -19,6 +24,42 @@ func TestMarkdown(t *testing.T) {
 	}
 
 	t.Log(string(h))
+}
+
+func TestGoldmark(t *testing.T) {
+	var ren = html.WithUnsafe()
+	var o = goldmark.WithRendererOptions(ren)
+	var m = goldmark.New(o)
+
+	var err error
+	var r = bytes.NewBufferString(content)
+	var w = &bytes.Buffer{}
+	err = m.Convert(r.Bytes(), w)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	t.Log(w.String())
+}
+
+var wpool = sync.Pool {
+	New: func() interface{} {
+		return &bytes.Buffer{}
+	},
+}
+
+func BenchmarkGoldmark(b *testing.B) {
+
+	var ren = html.WithUnsafe()
+	var o = goldmark.WithRendererOptions(ren)
+	var m = goldmark.New(o)
+
+	for i := 0; i < b.N; i++ {
+		var w = wpool.Get().(*bytes.Buffer)
+		_ = m.Convert([]byte(content), w)x
+		wpool.Put(w)
+	}
 }
 
 var content = `
