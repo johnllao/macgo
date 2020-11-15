@@ -4,6 +4,7 @@ import (
 	"bytes"
 
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/renderer/html"
 	"github.com/yuin/goldmark/text"
 )
@@ -31,7 +32,8 @@ func (c MarkdownContent) ToHTML() ([]byte, error) {
 func (c MarkdownContent) Convert() ([]byte, error) {
 	var ren = html.WithUnsafe()
 	var o = goldmark.WithRendererOptions(ren)
-	var m = goldmark.New(o)
+	var ext = goldmark.WithExtensions(extension.Table)
+	var m = goldmark.New(ext, o)
 
 	var err error
 	var w = &bytes.Buffer{}
